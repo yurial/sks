@@ -22,11 +22,14 @@
 #define True 1
 #define False 0
 
-
+#ifndef DB_XA_CREATE
+#define DB_XA_CREATE DB_CREATE
+#endif
+/*
 void bzero(void* addr,size_t n) {
   memset(addr,0,n);
 }
-
+*/
 #define test_cursor_closed(cursor) \
   if (UW_cursor_closed(cursor)) \
    invalid_argument("Attempt to use closed cursor")
@@ -190,7 +193,7 @@ value caml_db_init(value v){
 //+ type dbenv
 //+ type db
 
-void raise_db(char *msg) {
+void raise_db(const char *msg) {
   raise_with_string(*caml_db_exn, msg);
 }
 
@@ -206,7 +209,7 @@ void raise_run_recovery() {
 // calls to DB->err and DBENV->err lead to exceptions.
 
 // FIX: currently, prefix is ignored.  Should be concatenated.
-void raise_db_cb(const DB_ENV *dbenv, const char *prefix, char *msg) {
+void raise_db_cb(const DB_ENV *dbenv, const char *prefix, const char *msg) {
     raise_db(msg);
 }
 
